@@ -2,6 +2,7 @@ from datetime import date, datetime
 
 import isodate as iso
 from bson import ObjectId
+from flask import abort
 from flask.json import JSONEncoder
 from werkzeug.routing import BaseConverter
 
@@ -24,7 +25,11 @@ class ObjectIdConverter(BaseConverter):
         return str(value)
 
 def find_restaurants(mongo, _id=None):
-    query = {}
     if _id:
-        query["_id"] = ObjectId(id)
-    return list(mongo.db.restaurant.find(query))
+        try:
+            result = mongo.db.restaurant.find_one({"_id": ObjectId(_id)})
+        except Exception as e:
+            return (f"No restaurant found with the ID: {_id}", 204)
+    else:
+        result = list(mongo.db.restaurant.find())
+    return result
