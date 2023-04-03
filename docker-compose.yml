@@ -1,0 +1,34 @@
+version: '3'
+
+services:
+  app:
+    build: .
+    environment:
+      MONGO_URI: mongodb://root:password@localhost:27017/admin
+    networks:
+      - appnet
+    command: python app.py
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+    networks:
+      - appnet
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+      - ./data:/data
+    entrypoint: sh -c 'mongod --auth --fork --logpath /var/log/mongodb.log && sleep 5 && mongoimport -h localhost -d admin -c restaurant -u root -p password --type json --file data/restaurant.json'
+
+volumes:
+  mongo-data:
+
+networks:
+  appnet:
