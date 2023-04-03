@@ -38,8 +38,3 @@ jobs:
         git add kubernetes/flaskapp/deployment.yml
         git commit -m "Update image version in deployment file"
         git push
-
-    - name: Apply new deployment
-      uses: appleboy/kubectl-action@master
-      with:
-        args: apply -n ${{ env.NAMESPACE }} -f kubernetes/flaskapp/deployment.yml
