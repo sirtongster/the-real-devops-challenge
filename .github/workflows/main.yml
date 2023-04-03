@@ -39,4 +39,9 @@ jobs:
         git config --global user.name "Github Action"
         git add kubernetes/flaskapp/deployment.yml
         git commit -m "Update image version in deployment file"
-        git push
+
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: ${{ github.ref }}
