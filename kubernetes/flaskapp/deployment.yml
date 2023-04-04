@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: flaskapp
-          image: sirtongster/flaskapp:6bf3170840107116260c80e3c553775f242aa3de
+          image: sirtongster/flaskapp:c99cf2e7d54f11da8ee51f7dc1bc36f3df4d875d
           env:
             - name: MONGO_URI
               valueFrom:
