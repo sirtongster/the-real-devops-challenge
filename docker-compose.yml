@@ -4,7 +4,7 @@ services:
   app:
     build: .
     environment:
-      MONGO_URI: mongodb://root:password@localhost:27017/admin
+      MONGO_URI: mongodb://$MONGO_INITDB_ROOT_USERNAME:$MONGO_INITDB_ROOT_PASSWORD@localhost:$MONGO_DB_PORT/$MONGO_DB_DATABASE
     networks:
       - appnet
     command: python app.py
@@ -16,16 +16,16 @@ services:
   mongodb:
     image: mongo
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_ROOT_USERNAME: $MONGO_INITDB_ROOT_USERNAME
+      MONGO_INITDB_ROOT_PASSWORD: $MONGO_INITDB_ROOT_PASSWORD
     networks:
       - appnet
     ports:
-      - "27017:27017"
+      - "$MONGO_DB_PORT:$MONGO_DB_PORT"
     volumes:
       - mongo-data:/data/db
       - ./data:/data
-    entrypoint: sh -c 'mongod --auth --fork --logpath /var/log/mongodb.log && sleep 5 && mongoimport -h localhost -d admin -c restaurant -u root -p password --type json --file data/restaurant.json'
+    entrypoint: sh -c 'mongod --auth --fork --logpath /var/log/mongodb.log && sleep 5 && mongoimport -h localhost -d $MONGO_DB_DATABASE -c $MONGO_DB_COLLECTION -u $MONGO_INITDB_ROOT_USERNAME -p $MONGO_INITDB_ROOT_PASSWORD --type json --file data/restaurant.json'
 
 volumes:
   mongo-data:
